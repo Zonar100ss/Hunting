@@ -1,0 +1,350 @@
+* {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background: #050505;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: none;
+    overscroll-behavior: none;
+}
+canvas {
+    display: block;
+    width: 100vw;
+    height: 100vh;
+}
+
+#ui-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 10;
+}
+.hud-panel {
+    position: absolute;
+    background: rgba(0, 20, 0, 0.85);
+    border: 2px solid #4a7c59;
+    color: #a8e6cf;
+    padding: 10px 15px;
+    border-radius: 12px;
+    font-weight: bold;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    pointer-events: auto;
+    backdrop-filter: blur(4px);
+}
+#stats-panel {
+    top: 10px;
+    left: 10px;
+    font-size: 16px;
+    line-height: 1.5;
+}
+#weapon-panel {
+    top: 10px;
+    right: 10px;
+    text-align: right;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+.control-btn {
+    position: absolute;
+    border: none;
+    border-radius: 50%;
+    font-weight: bold;
+    cursor: pointer;
+    pointer-events: auto;
+    transition: transform 0.1s, background 0.1s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    -webkit-tap-highlight-color: transparent;
+}
+.control-btn:active {
+    transform: scale(0.92);
+}
+
+#reload-btn {
+    bottom: 30px;
+    right: 20px;
+    width: 90px;
+    height: 90px;
+    background: linear-gradient(145deg, #a00000, #600000);
+    color: white;
+    font-size: 14px;
+    border: 3px solid #ff4444;
+    flex-direction: column;
+    line-height: 1.2;
+}
+#reload-btn span {
+    font-size: 24px;
+    display: block;
+}
+
+#shop-btn {
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(145deg, #d4af37, #8a701e);
+    color: #000;
+    font-size: 24px;
+    border: 2px solid #ffd700;
+}
+
+#reload-warning {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #ff3333;
+    font-size: 28px;
+    font-weight: 900;
+    text-shadow: 0 0 10px #ff0000;
+    display: none;
+    animation: blink 0.6s infinite;
+    text-align: center;
+    pointer-events: none;
+    background: rgba(0,0,0,0.7);
+    padding: 10px 20px;
+    border-radius: 10px;
+}
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+}
+
+.screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(5, 10, 5, 0.95);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 20;
+    cursor: default;
+    padding: 20px;
+}
+.hidden { display: none !important; }
+
+h1 {
+    font-size: 42px;
+    color: #4a7c59;
+    text-shadow: 0 0 15px #4a7c59;
+    margin-bottom: 5px;
+    letter-spacing: 2px;
+    text-align: center;
+}
+h2 {
+    font-size: 20px;
+    color: #a8e6cf;
+    margin-bottom: 25px;
+    text-align: center;
+}
+.btn {
+    padding: 18px 30px;
+    font-size: 20px;
+    font-weight: bold;
+    color: #000;
+    background: linear-gradient(145deg, #4a7c59, #365c42);
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.1s;
+    margin: 10px 0;
+    width: 100%;
+    max-width: 300px;
+    box-shadow: 0 4px 15px rgba(74, 124, 89, 0.4);
+    -webkit-tap-highlight-color: transparent;
+}
+.btn:active {
+    transform: scale(0.96);
+    background: #365c42;
+}
+.btn:disabled {
+    background: #333;
+    color: #666;
+    box-shadow: none;
+    cursor: not-allowed;
+}
+.btn-secondary {
+    background: linear-gradient(145deg, #8b0000, #500000);
+    color: white;
+}
+
+.shop-container {
+    width: 100%;
+    max-width: 600px;
+    height: 90vh;
+    display: flex;
+    flex-direction: column;
+}
+.shop-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    border-bottom: 2px solid #4a7c59;
+    padding-bottom: 10px;
+    flex-shrink: 0;
+}
+.shop-money {
+    font-size: 28px;
+    color: #ffd700;
+    text-shadow: 0 0 10px #ffd700;
+    font-weight: bold;
+}
+
+/* КОРРЕКТНАЯ ПРОКРУТКА ДЛЯ МАГАЗИНА */
+.shop-scroll-area {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    touch-action: pan-y !important;
+    padding-right: 5px;
+}
+.shop-scroll-area::-webkit-scrollbar {
+    width: 8px;
+}
+.shop-scroll-area::-webkit-scrollbar-track {
+    background: rgba(0,0,0,0.3);
+    border-radius: 4px;
+}
+.shop-scroll-area::-webkit-scrollbar-thumb {
+    background: #4a7c59;
+    border-radius: 4px;
+}
+
+.shop-section {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid #4a7c59;
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+.shop-section h3 {
+    color: #4a7c59;
+    margin-top: 0;
+    border-bottom: 1px solid #333;
+    padding-bottom: 10px;
+    font-size: 18px;
+}
+.inventory-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 15px;
+}
+.inv-item {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 10px;
+    border-radius: 8px;
+    text-align: center;
+    border: 1px solid #333;
+}
+.inv-item .emoji { font-size: 28px; display: block; margin-bottom: 5px; }
+.inv-item .count { color: #fff; font-size: 16px; font-weight: bold; }
+.inv-item .price { color: #ffd700; font-size: 13px; }
+
+.weapon-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.weapon-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #333;
+}
+.weapon-item.owned {
+    border-color: #4a7c59;
+    background: rgba(74, 124, 89, 0.15);
+}
+.weapon-info { flex: 1; padding-right: 10px; }
+.weapon-name { color: #fff; font-size: 16px; font-weight: bold; }
+.weapon-stats { color: #888; font-size: 12px; margin-top: 4px; }
+.weapon-btn {
+    padding: 10px 15px;
+    font-size: 14px;
+    min-width: 100px;
+}
+
+.upgrade-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.upgrade-stat {
+    color: #a8e6cf;
+    font-size: 15px;
+    line-height: 1.6;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.controls-hint {
+    margin-top: 20px;
+    color: #888;
+    font-size: 14px;
+    text-align: center;
+    line-height: 1.5;
+}
+
+.legal-container {
+    background: rgba(0, 20, 0, 0.9);
+    border: 2px solid #4a7c59;
+    padding: 30px;
+    border-radius: 15px;
+    max-width: 500px;
+    width: 100%;
+    text-align: center;
+}
+.legal-links {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin: 20px 0;
+}
+.legal-link {
+    color: #ffd700;
+    text-decoration: none;
+    font-size: 18px;
+    padding: 15px;
+    background: rgba(255, 215, 0, 0.1);
+    border: 1px solid #ffd700;
+    border-radius: 8px;
+    transition: background 0.2s;
+}
+.legal-link:hover {
+    background: rgba(255, 215, 0, 0.2);
+}
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+.checkbox-container input {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
